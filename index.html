@@ -1022,13 +1022,13 @@ function getSiteHTML(t) {
         <div class="site-card"><h3>TYPOGRAPHY</h3><p>Clean, functional typefaces chosen for readability and aesthetic integrity above decorative impulse.</p></div>
         <div class="site-card"><h3>MODERNISM</h3><p>Form follows function — every design decision must serve the communication purpose first.</p></div>
       </div>
-      <footer class="site-footer ${t.cls}">Smith Theme OPT</footer>
+      <footer class="site-footer ${t.cls}">Smith's Theme</footer>
     </div>`;
   }
 
   return `<div class="site-content ${t.cls}">
     <nav class="site-nav ${t.cls}">
-      <span class="logo">BRAND</span>
+      <span class="logo">Smith's Theme</span>
       <div class="site-nav-links">
         <a href="#">Home</a><a href="#">About</a><a href="#">Work</a><a href="#">Contact</a>
       </div>
@@ -1052,7 +1052,7 @@ function getSiteHTML(t) {
         <p>Delivering results that exceed expectations through collaboration, innovation, and an unwavering commitment to quality.</p>
       </div>
     </div>
-    <footer class="site-footer ${t.cls}">Smith Theme OPT</footer>
+    <footer class="site-footer ${t.cls}">Smith's Theme</footer>
   </div>`;
 }
 
@@ -1077,13 +1077,11 @@ document.getElementById('panel-toggle').addEventListener('click', () => {
 
 // Apply default theme
 applyTheme(themes[0]);
-</script>
 
 // ===== MODAL =====
 function openModal() {
   document.getElementById('modal-overlay').classList.add('open');
   document.body.style.overflow = 'hidden';
-  // Pre-select current theme
   const sel = document.getElementById('f-theme');
   if (currentCls) {
     const t = themes.find(x => x.cls === currentCls);
@@ -1106,7 +1104,7 @@ const sel = document.getElementById('f-theme');
 themes.forEach(t => {
   const opt = document.createElement('option');
   opt.value = t.id;
-  opt.textContent = `${String(t.id).padStart(2,'0')} — ${t.name}`;
+  opt.textContent = String(t.id).padStart(2,'0') + ' — ' + t.name;
   opt.dataset.dot = t.dot;
   opt.dataset.name = t.name;
   sel.appendChild(opt);
@@ -1120,7 +1118,7 @@ function onThemeChange() {
   if (!sel.value) { badge.classList.remove('visible'); return; }
   const opt = sel.options[sel.selectedIndex];
   dot.style.background = opt.dataset.dot;
-  txt.textContent = `已選擇：${opt.textContent}`;
+  txt.textContent = '已選擇：' + opt.textContent;
   badge.classList.add('visible');
 }
 
@@ -1128,7 +1126,7 @@ function onThemeChange() {
 async function sendTelegram(msg) {
   const TOKEN = '8383899299:AAFBBjuL7IacuQgx-KTzJ1IowTL1ttNuCg0';
   const CHAT  = '8208576750';
-  const url = `https://api.telegram.org/bot${TOKEN}/sendMessage`;
+  const url = 'https://api.telegram.org/bot' + TOKEN + '/sendMessage';
   const res = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -1144,7 +1142,7 @@ async function sendEmail(data) {
     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
     body: JSON.stringify({
       _replyto: data.email,
-      _subject: `[Smith Theme OPT] 新詢問 — ${data.themeName} — ${data.name}`,
+      _subject: "[Smith's Theme] 新詢問 — " + data.themeName + " — " + data.name,
       theme: data.themeNum + ' ' + data.themeName,
       name: data.name,
       phone: data.phone,
@@ -1182,16 +1180,7 @@ async function submitForm() {
 
   const now = new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' });
 
-  const tgMsg = `🎨 <b>Smith Theme OPT — 新詢問</b>
-━━━━━━━━━━━━━━━━━━
-📌 <b>主題：</b>${themeNum} — ${themeName}
-👤 <b>姓名：</b>${name}
-📞 <b>電話：</b>${phone}
-📧 <b>Email：</b>${email}
-💬 <b>Line ID：</b>${lineId || '（未填）'}
-📝 <b>備註：</b>${note || '（無）'}
-🕐 <b>時間：</b>${now}
-━━━━━━━━━━━━━━━━━━`;
+  const tgMsg = `<b>🎨 Smith's Theme — 新詢問</b>\n━━━━━━━━━━━━━━━━━━\n📌 <b>主題：</b>${themeNum} — ${themeName}\n👤 <b>姓名：</b>${name}\n📞 <b>電話：</b>${phone}\n📧 <b>Email：</b>${email}\n💬 <b>Line ID：</b>${lineId || '（未填）'}\n📝 <b>備註：</b>${note || '（無）'}\n🕐 <b>時間：</b>${now}\n━━━━━━━━━━━━━━━━━━`;
 
   const data = { themeNum, themeName, name, phone, email, lineId, note };
 
@@ -1200,14 +1189,11 @@ async function submitForm() {
       sendTelegram(tgMsg),
       sendEmail(data)
     ]);
-
     const tgSuccess   = tgOk.status === 'fulfilled' && tgOk.value;
     const mailSuccess = mailOk.status === 'fulfilled' && mailOk.value;
-
     if (tgSuccess || mailSuccess) {
       status.className = 'success';
       status.innerHTML = '✅ 詢問已成功送出！<br>我們將盡快與您聯繫，謝謝您的信任 🙏';
-      // Reset form
       setTimeout(() => {
         document.getElementById('f-theme').value = '';
         document.getElementById('f-name').value = '';
@@ -1222,4 +1208,10 @@ async function submitForm() {
     }
   } catch(e) {
     status.className = 'error';
-    status.innerHTML = '❌ 傳送失敗，請直接聯絡：<br><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4f3d3a2a26
+    status.innerHTML = '❌ 傳送失敗，請直接聯絡：<br>rueishian.chen@gmail.com';
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>
