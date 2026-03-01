@@ -106,9 +106,39 @@
   #theme-panel.collapsed ~ #main-wrapper { margin-right: 20px; }
 
   @media (max-width: 768px) {
-    #theme-panel { width: 240px; }
-    #theme-panel.collapsed { transform: translateX(220px); }
-    #main-wrapper { margin-right: 0 !important; }
+    #theme-panel {
+      width: 75vw;
+      max-width: 280px;
+      transform: translateX(100%);
+    }
+    #theme-panel.open {
+      transform: translateX(0);
+    }
+    #theme-panel.collapsed {
+      transform: translateX(100%);
+    }
+    #panel-toggle {
+      left: -46px;
+      width: 46px;
+      height: 46px;
+      border-radius: 10px 0 0 10px;
+      background: #1a1a1a;
+      box-shadow: -4px 0 12px rgba(0,0,0,0.4);
+    }
+    #main-wrapper {
+      margin-right: 0 !important;
+    }
+    /* Overlay backdrop when panel is open on mobile */
+    #mobile-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 9998;
+    }
+    #mobile-backdrop.visible {
+      display: block;
+    }
   }
 
   /* ===== SITE TEMPLATE ===== */
@@ -895,6 +925,9 @@
   <ul id="theme-list"></ul>
 </div>
 
+<!-- MOBILE BACKDROP -->
+<div id="mobile-backdrop" onclick="closeMobilePanel()"></div>
+
 <!-- CONTACT FAB BUTTON -->
 <button id="contact-fab" onclick="openModal()">
   ✉
@@ -1071,9 +1104,43 @@ function applyTheme(t) {
 
 // Panel toggle
 const panel = document.getElementById('theme-panel');
+const backdrop = document.getElementById('mobile-backdrop');
+const isMobile = () => window.innerWidth <= 768;
+
+function closeMobilePanel() {
+  panel.classList.remove('open');
+  panel.classList.add('collapsed');
+  backdrop.classList.remove('visible');
+}
+
 document.getElementById('panel-toggle').addEventListener('click', () => {
-  panel.classList.toggle('collapsed');
+  if (isMobile()) {
+    const isOpen = panel.classList.contains('open');
+    if (isOpen) {
+      panel.classList.remove('open');
+      panel.classList.add('collapsed');
+      backdrop.classList.remove('visible');
+    } else {
+      panel.classList.add('open');
+      panel.classList.remove('collapsed');
+      backdrop.classList.add('visible');
+    }
+  } else {
+    panel.classList.toggle('collapsed');
+  }
 });
+
+// Close panel on mobile when a theme is selected
+document.getElementById('theme-list').addEventListener('click', () => {
+  if (isMobile()) {
+    closeMobilePanel();
+  }
+});
+
+// Set initial state: collapsed on mobile
+if (isMobile()) {
+  panel.classList.add('collapsed');
+}
 
 // Apply default theme
 applyTheme(themes[0]);
